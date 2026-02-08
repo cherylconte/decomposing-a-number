@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Interactive Base-10 Decomposition</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    margin:0; padding:0;
+    background: #f9f9f9;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    min-height: 100vh;
+  }
+
+  h2 { margin: 20px 0; text-align:center; }
+
+  #controls {
+    margin-bottom: 20px;
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  input, button {
+    font-size: 16px;
+    padding: 5px 10px;
+  }
+
+  #availableBlocks {
+    margin-bottom: 20px;
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .block {
+    cursor: pointer;
+    user-select: none;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    font-weight:bold;
+    color:#fff;
+    border-radius:4px;
+    transition: transform 0.1s;
+  }
+
+  .flat { background:#f06; width:60px; height:60px; }      /* hundreds = square */
+  .rod  { background:#0a0; width:30px; height:100px; }     /* tens = vertical rod */
+  .unit { background:#06f; width:30px; height:30px; }      /* ones = small square */
+
+  #board {
+    display:flex;
+    gap:20px;
+    border:2px solid #333;
+    background:#fff;
+    padding:20px 10px 60px 10px;
+    justify-content:flex-start;
+    min-width: 90vw;
+  }
+
+  .column {
+    flex:1;
+    display:flex;
+    flex-direction:row;
+    align-items:flex-start;
+    border-left:1px solid #333;
+    min-height: 80px;
+    position:relative;
+    flex-wrap: wrap;
+    gap:5px;
+    padding-top:30px;
+  }
+  .column:first-child { border-left:none; }
+
+  .column-label {
+    position:absolute;
+    top:0;
+    width:100%;
+    text-align:center;
+    font-weight:bold;
+  }
+
+  #equation {
+    margin-top:40px;
+    font-size:24px;
+  }
+
+</style>
+</head>
+<body>
+
+<h2>Interactive Base-10 Decomposition</h2>
+
+<div id="controls">
+  <label>Number to Decompose: <input type="number" id="numberInput" value="267"></label>
+  <button id="setup">Set Up</button>
+</div>
+
+<div id="availableBlocks">
+  <div class="block flat" data-value="100">100</div>
+  <div class="block rod" data-value="10">10</div>
+  <div class="block unit" data-value="1">1</div>
+</div>
+
+<div id="board">
+  <div class="column" id="hundredsCol"><div class="column-label">Hundreds</div></div>
+  <div class="column" id="tensCol"><div class="column-label">Tens</div></div>
+  <div class="column" id="onesCol"><div class="column-label">Ones</div></div>
+</div>
+
+<div id="equation">
+  267 = ___ + ___ + ___
+</div>
+
+<script>
+const numberInputEl = document.getElementById('numberInput');
+const setupBtn = document.getElementById('setup');
+const availableBlocks = document.querySelectorAll('#availableBlocks .block');
+const hundredsCol = document.getElementById('hundredsCol');
+const tensCol = document.getElementById('tensCol');
+const onesCol = document.getElementById('onesCol');
+
+// --- Clear columns ---
+function clearBoard() {
+  [hundredsCol, tensCol, onesCol].forEach(col => col.innerHTML = '<div class="column-label">'+col.querySelector('.column-label').innerText+'</div>');
+}
+
+// --- Add block to column ---
+function addBlockToColumn(type){
+  const block = document.createElement('div');
+  block.classList.add('block', type);
+  block.dataset.value = type==='flat'?100:type==='rod'?10:1;
+  block.innerText = ''; // start blank
+  block.addEventListener('click', ()=>{
+    if(block.innerText==='') block.innerText = block.dataset.value; // reveal value
+  });
+
+  // append block horizontally
+  if(type==='flat') hundredsCol.appendChild(block);
+  else if(type==='rod') tensCol.appendChild(block);
+  else onesCol.appendChild(block);
+}
+
+// --- Available block click ---
+availableBlocks.forEach(b => {
+  b.addEventListener('click', ()=>{
+    const type = b.classList.contains('flat')?'flat':b.classList.contains('rod')?'rod':'unit';
+    addBlockToColumn(type);
+  });
+});
+
+// --- Setup button ---
+setupBtn.addEventListener('click', ()=>{
+  clearBoard();
+  document.getElementById('equation').innerText = `${numberInputEl.value} = ___ + ___ + ___`;
+});
+</script>
+
+</body>
+</html>
