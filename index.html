@@ -50,9 +50,12 @@
     transition: transform 0.1s;
   }
 
-  .flat { background:#f06; width:30px; height:100px; }      /* hundreds = visually 10 ones high */
-  .rod  { background:#0a0; width:30px; height:100px; }      /* tens = vertical rod */
-  .unit { background:#06f; width:30px; height:10px; }       /* ones = small square */
+  /* Base unit */
+  .unit { background:#06f; width:20px; height:20px; }
+  /* Tens: 1 unit wide, 10 units tall */
+  .rod  { background:#0a0; width:20px; height:200px; }
+  /* Hundreds: 10 units wide, 10 units tall (like 10 rods stacked) */
+  .flat { background:#f06; width:200px; height:200px; }
 
   #board {
     display:flex;
@@ -164,3 +167,4 @@ setupBtn.addEventListener('click', ()=>{
 
 </body>
 </html>
+
